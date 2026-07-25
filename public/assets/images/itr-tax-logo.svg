@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="ITR Tax">
+  <defs>
+    <linearGradient id="itrMarkBg" x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4320D4"/>
+      <stop offset=".55" stop-color="#5B2CFF"/>
+      <stop offset="1" stop-color="#7B5CFF"/>
+    </linearGradient>
+    <linearGradient id="itrMarkAccent" x1="40" y1="8" x2="58" y2="28" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF7A4D"/>
+      <stop offset="1" stop-color="#FF5C35"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="18" fill="url(#itrMarkBg)"/>
+  <path d="M18 18h11.2c1.2 0 2.1.9 2.1 2.1v2.2c0 1.2-.9 2.1-2.1 2.1H24.8v18.5c0 1.2-.9 2.1-2.1 2.1h-2.5c-1.2 0-2.1-.9-2.1-2.1V18.1c0-.06.05-.1.1-.1Z" fill="#fff"/>
+  <path d="M33.2 18h14.6c1.15 0 2.1.95 2.1 2.1v2.3c0 1.15-.95 2.1-2.1 2.1H41.6v18.4c0 1.15-.95 2.1-2.1 2.1h-2.5c-1.15 0-2.1-.95-2.1-2.1V20.1c0-1.15.95-2.1 2.1-2.1Z" fill="#fff"/>
+  <circle cx="50" cy="16" r="9" fill="url(#itrMarkAccent)"/>
+  <path d="M46.2 16.1 48.5 18.4 53.6 13.2" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

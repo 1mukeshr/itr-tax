@@ -1,0 +1,5 @@
+/database/*.sqlite
+/storage/uploads/*
+!/storage/uploads/.gitkeep
+/storage/receipts/*
+!/storage/receipts/.gitkeep

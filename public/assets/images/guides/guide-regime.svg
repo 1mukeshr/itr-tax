@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="480" viewBox="0 0 800 480" fill="none">
+  <rect width="800" height="480" fill="#FFF7F4"/>
+  <rect x="140" y="100" width="230" height="280" rx="18" fill="#fff" stroke="#E7E4EF"/>
+  <rect x="430" y="100" width="230" height="280" rx="18" fill="#fff" stroke="#5B2CFF" stroke-width="2"/>
+  <rect x="170" y="135" width="100" height="14" rx="7" fill="#6B7280"/>
+  <rect x="170" y="175" width="170" height="10" rx="5" fill="#E5E7EB"/>
+  <rect x="170" y="200" width="140" height="10" rx="5" fill="#E5E7EB"/>
+  <rect x="170" y="250" width="120" height="36" rx="8" fill="#F3F4F6"/>
+  <rect x="460" y="135" width="100" height="14" rx="7" fill="#5B2CFF"/>
+  <rect x="460" y="175" width="170" height="10" rx="5" fill="#DDD6FE"/>
+  <rect x="460" y="200" width="140" height="10" rx="5" fill="#DDD6FE"/>
+  <rect x="460" y="250" width="120" height="36" rx="8" fill="#5B2CFF"/>
+  <text x="520" y="274" text-anchor="middle" fill="#fff" font-family="Arial, sans-serif" font-size="14" font-weight="700">Better</text>
+  <path d="M385 240h30" stroke="#FF5C35" stroke-width="4" stroke-linecap="round"/>
+  <path d="M405 230l15 10-15 10" stroke="#FF5C35" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

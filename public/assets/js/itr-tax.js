@@ -656,4 +656,19 @@ document.addEventListener('DOMContentLoaded', () => {
       }).catch(() => addBubble('Could not reach the assistant. Check your connection.', 'bot'));
     });
   }
+
+  // Smooth section reveals
+  const reveals = document.querySelectorAll('.itr-reveal');
+  if (reveals.length && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-in');
+        io.unobserve(entry.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+    reveals.forEach((el) => io.observe(el));
+  } else {
+    reveals.forEach((el) => el.classList.add('is-in'));
+  }
 });

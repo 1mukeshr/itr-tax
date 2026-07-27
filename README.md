@@ -11,11 +11,43 @@ Official upload / e-verify / CPC refund remain on the Income Tax Department port
 
 ---
 
+## Tech stack
+
+| Layer | Technology |
+|-------|------------|
+| Backend | **PHP 8.3+**, **Laravel 13** |
+| Frontend | **Blade** templates, custom CSS/JS (`public/assets`) |
+| Database | **MySQL / MariaDB** (portable MariaDB under `tools/mariadb`) |
+| Auth / sessions | Laravel session auth (Admin · User · Tax Expert roles) |
+| Payments | Demo checkout + optional **Razorpay** |
+| Tooling | Composer, Artisan, PHPUnit, Laravel Pint |
+| Optional scaffold | Vite 8 + Tailwind 4 (not required for runtime UI) |
+| OS (dev) | Windows PowerShell (included start/stop scripts) |
+
+---
+
 ## Requirements
 
-- PHP 8.3+ with `pdo_mysql`, `openssl`, `curl`, `zip`
-- Composer
-- MySQL / MariaDB (portable MariaDB included under `tools/mariadb` on Windows)
+### Runtime
+
+| Requirement | Details |
+|-------------|---------|
+| **PHP** | `8.3+` (project tested on PHP 8.3) |
+| **PHP extensions** | `pdo_mysql`, `mysqli`, `openssl`, `curl`, `zip`, `mbstring`, `fileinfo`, `intl` |
+| **Composer** | 2.x |
+| **Database** | MySQL 8+ or MariaDB 10.5+ |
+| **Web server** | `php artisan serve` for local, or Apache/Nginx pointing at `public/` |
+
+### Optional
+
+| Requirement | When needed |
+|-------------|-------------|
+| **Node.js + npm** | Only if you run Vite (`npm run build` / `composer setup`) |
+| **Razorpay keys** | Live expert payments (`RAZORPAY_KEY` + `RAZORPAY_SECRET`) |
+
+### Not supported on GitHub Pages
+
+GitHub Pages is **static only**. This project needs PHP + MySQL, so the live app must run on your machine or a PHP host (not `*.github.io`).
 
 ---
 

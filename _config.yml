@@ -1,0 +1,4 @@
+﻿# Prevent README from becoming the site homepage
+include:
+  - .nojekyll
+defaults: []

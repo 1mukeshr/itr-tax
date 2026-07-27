@@ -4,10 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ITR Tax — Income Tax eFiling</title>
-  <meta name="description" content="ITR Tax helps you prepare ITR with regime comparison — Self Filing or Hire a Tax Expert.">
+  <meta name="description" content="ITR Tax — PHP 8.3, Laravel 13, Blade, MySQL. Self Filing or Hire a Tax Expert.">
   <meta name="theme-color" content="#5b2cff">
-  <meta http-equiv="Cache-Control" content="no-cache">
-  <link rel="icon" href="./public/assets/images/itr-tax-logo.svg" type="image/svg+xml">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <link rel="icon" href="./public/assets/images/itr-tax-logo.svg?v=3" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -23,59 +24,44 @@
       --display: "Outfit", system-ui, sans-serif;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { min-height: 100%; }
+    html { scroll-behavior: smooth; }
     body {
       font-family: var(--font);
       color: var(--text);
-      background: #faf8ff;
-      line-height: 1.5;
+      background: #f7f5fc;
+      line-height: 1.55;
     }
     a { color: inherit; text-decoration: none; }
+    code {
+      font-size: .86em;
+      background: #f3f0ff;
+      color: var(--purple-dark);
+      padding: .12rem .4rem;
+      border-radius: 5px;
+    }
 
-    .page {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+    .wrap { width: min(980px, 92%); margin: 0 auto; }
+
+    .hero {
       position: relative;
       overflow: hidden;
-    }
-    .bg {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
+      color: var(--text);
+      isolation: isolate;
+      padding: 1.35rem 0 3.25rem;
       background:
-        linear-gradient(115deg, rgba(250, 248, 255, .97) 0%, rgba(250, 248, 255, .82) 42%, rgba(250, 248, 255, .35) 70%, transparent 88%),
-        url("./public/assets/images/itr-tax-hero.png") right center / cover no-repeat,
+        linear-gradient(115deg, rgba(250, 248, 255, .97) 0%, rgba(250, 248, 255, .88) 40%, rgba(250, 248, 255, .45) 68%, transparent 90%),
+        url("./public/assets/images/itr-tax-hero.png?v=3") right center / cover no-repeat,
         linear-gradient(125deg, #faf8ff, #efe8ff);
     }
-    .inner {
-      position: relative;
-      z-index: 1;
-      width: min(1080px, 92%);
-      margin: 0 auto;
-      padding: 1.5rem 0 3rem;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
     .top {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
-      margin-bottom: clamp(2.5rem, 8vh, 5rem);
+      margin-bottom: clamp(2rem, 6vh, 3.5rem);
     }
-    .brand {
-      display: inline-flex;
-      align-items: center;
-      gap: .75rem;
-    }
-    .brand img {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-    }
+    .brand { display: inline-flex; align-items: center; gap: .75rem; }
+    .brand img { width: 44px; height: 44px; border-radius: 12px; }
     .brand strong {
       display: block;
       font-family: var(--display);
@@ -88,155 +74,258 @@
       color: var(--muted);
       font-size: .72rem;
       font-weight: 600;
-      letter-spacing: .02em;
     }
     .top-link {
       font-size: .88rem;
       font-weight: 650;
       color: var(--purple);
       border: 1px solid #d8d0f5;
-      background: rgba(255, 255, 255, .75);
+      background: rgba(255, 255, 255, .8);
       padding: .55rem 1rem;
       border-radius: 10px;
     }
-    .top-link:hover { background: #fff; border-color: #c4b8f0; }
-
-    .hero {
-      max-width: 34rem;
-      animation: rise .7s ease both;
-    }
-    @keyframes rise {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    .hero-copy { max-width: 34rem; }
     .eyebrow {
       font-size: .75rem;
       font-weight: 700;
       letter-spacing: .08em;
       text-transform: uppercase;
       color: var(--purple);
-      margin-bottom: .7rem;
+      margin-bottom: .65rem;
     }
     h1 {
       font-family: var(--display);
-      font-size: clamp(2.1rem, 4.5vw, 3.15rem);
+      font-size: clamp(2rem, 4.2vw, 2.95rem);
       font-weight: 650;
       line-height: 1.12;
       letter-spacing: -.02em;
-      margin-bottom: 1rem;
+      margin-bottom: .9rem;
     }
-    h1 em {
-      font-style: normal;
-      color: var(--orange);
-    }
+    h1 em { font-style: normal; color: var(--orange); }
     .lead {
-      font-size: 1.05rem;
+      font-size: 1.02rem;
       color: var(--muted);
-      margin-bottom: 1.6rem;
-      max-width: 32rem;
-    }
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .75rem;
       margin-bottom: 1.35rem;
     }
+    .actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-bottom: 1.1rem; }
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: .4rem;
-      min-height: 48px;
-      padding: .75rem 1.25rem;
+      min-height: 46px;
+      padding: .7rem 1.2rem;
       border-radius: 10px;
       font-family: var(--font);
-      font-size: .95rem;
+      font-size: .94rem;
       font-weight: 700;
       border: 0;
-      cursor: pointer;
-      transition: background .15s ease, transform .15s ease;
     }
-    .btn:hover { transform: translateY(-1px); }
     .btn-orange { background: var(--orange); color: #fff; }
-    .btn-orange:hover { background: #e6451f; color: #fff; }
     .btn-outline {
-      background: rgba(255, 255, 255, .88);
+      background: rgba(255, 255, 255, .9);
       color: var(--text);
       border: 1px solid var(--line);
     }
-    .btn-outline:hover { border-color: #cfc4ff; color: var(--purple); }
-
-    .note {
+    .alert {
+      max-width: 34rem;
       font-size: .88rem;
       color: var(--muted);
-      max-width: 30rem;
-      padding: .9rem 1rem;
+      padding: .85rem 1rem;
       border-radius: 12px;
-      background: rgba(255, 255, 255, .78);
+      background: rgba(255, 255, 255, .82);
       border: 1px solid var(--line);
     }
-    .note strong { color: var(--text); font-weight: 700; }
-    .note code {
-      font-size: .82em;
-      background: #f3f0ff;
-      color: var(--purple-dark);
-      padding: .1rem .35rem;
-      border-radius: 5px;
+    .alert strong { color: var(--text); }
+
+    .section {
+      padding: 2.4rem 0;
+      border-top: 1px solid var(--line);
+      background: #fff;
+    }
+    .section:nth-of-type(even) { background: #faf9fd; }
+    .section h2 {
+      font-family: var(--display);
+      font-size: 1.35rem;
+      font-weight: 650;
+      margin-bottom: .35rem;
+    }
+    .section > .wrap > p.sub {
+      color: var(--muted);
+      margin-bottom: 1.15rem;
+      font-size: .95rem;
     }
 
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      font-size: .92rem;
+    }
+    th, td {
+      text-align: left;
+      padding: .75rem .9rem;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    th {
+      background: #f3f0ff;
+      color: var(--purple-dark);
+      font-size: .78rem;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    tr:last-child td { border-bottom: 0; }
+    td:first-child { font-weight: 700; white-space: nowrap; width: 28%; }
+
+    pre {
+      background: #18141f;
+      color: #f5f2ff;
+      border-radius: 12px;
+      padding: 1rem 1.1rem;
+      overflow-x: auto;
+      font-size: .84rem;
+      line-height: 1.55;
+      margin: .75rem 0 1rem;
+    }
+    .ports {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .75rem;
+      margin-top: .5rem;
+    }
+    .port {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: .9rem 1rem;
+      background: #fff;
+    }
+    .port span { display: block; color: var(--muted); font-size: .78rem; font-weight: 650; margin-bottom: .2rem; }
+    .port strong { font-family: var(--display); font-size: 1rem; }
+
     .foot {
-      margin-top: auto;
-      padding-top: 3rem;
-      font-size: .8rem;
+      padding: 1.5rem 0 2rem;
+      font-size: .82rem;
       color: var(--muted);
+      background: #fff;
+      border-top: 1px solid var(--line);
     }
     .foot a { color: var(--purple); font-weight: 650; }
 
     @media (max-width: 720px) {
-      .bg {
+      .hero {
         background:
-          linear-gradient(180deg, rgba(250, 248, 255, .97) 0%, rgba(250, 248, 255, .9) 55%, rgba(250, 248, 255, .72) 100%),
-          url("./public/assets/images/itr-tax-hero.png") 70% center / cover no-repeat,
+          linear-gradient(180deg, rgba(250, 248, 255, .97), rgba(250, 248, 255, .88)),
+          url("./public/assets/images/itr-tax-hero.png?v=3") 70% center / cover no-repeat,
           #faf8ff;
       }
       .actions .btn { width: 100%; }
+      .ports { grid-template-columns: 1fr; }
+      td:first-child { white-space: normal; width: auto; }
     }
   </style>
 </head>
 <body>
-  <div class="page">
-    <div class="bg" aria-hidden="true"></div>
-    <div class="inner">
-      <header class="top">
+  <header class="hero">
+    <div class="wrap">
+      <div class="top">
         <a class="brand" href="https://github.com/1mukeshr/itr-tax" aria-label="ITR Tax">
-          <img src="./public/assets/images/itr-tax-logo.svg" width="44" height="44" alt="">
+          <img src="./public/assets/images/itr-tax-logo.svg?v=3" width="44" height="44" alt="">
           <span>
             <strong>ITR Tax</strong>
             <small>Income Tax eFiling</small>
           </span>
         </a>
         <a class="top-link" href="https://github.com/1mukeshr/itr-tax">View on GitHub</a>
-      </header>
+      </div>
 
-      <main class="hero">
+      <div class="hero-copy">
         <p class="eyebrow">Laravel ITR workspace</p>
         <h1>File ITR with <em>clear regime comparison</em></h1>
-        <p class="lead">Self Filing for Form 16 cases, or Hire a Tax Expert for complex income — documents, payments, and acknowledgement tracking in one place.</p>
+        <p class="lead">Self Filing for Form 16 cases, or Hire a Tax Expert for complex income — documents, payments, and acknowledgement tracking.</p>
         <div class="actions">
-          <a class="btn btn-orange" href="https://github.com/1mukeshr/itr-tax#quick-start-windows--mysql">Get started locally</a>
+          <a class="btn btn-orange" href="#requirements">Requirements &amp; tech</a>
           <a class="btn btn-outline" href="https://github.com/1mukeshr/itr-tax">Open repository</a>
         </div>
-        <p class="note">
-          <strong>Stack:</strong> PHP 8.3 · Laravel 13 · Blade · MySQL/MariaDB · optional Razorpay.<br>
-          <strong>This page is static only.</strong> Run the full app locally —
-          see <code>README.md</code> for requirements and ports <code>8000</code> / <code>8001</code>.
+        <p class="alert">
+          <strong>GitHub Pages is static only</strong> — it cannot run PHP/MySQL.
+          Use the steps below on your PC (ports <code>8000</code> / <code>8001</code>).
         </p>
-      </main>
-
-      <footer class="foot">
-        Source: <a href="https://github.com/1mukeshr/itr-tax">github.com/1mukeshr/itr-tax</a>
-      </footer>
+      </div>
     </div>
-  </div>
+  </header>
+
+  <section class="section" id="tech">
+    <div class="wrap">
+      <h2>Tech stack</h2>
+      <p class="sub">What this project is built with.</p>
+      <table>
+        <thead><tr><th>Layer</th><th>Technology</th></tr></thead>
+        <tbody>
+          <tr><td>Backend</td><td>PHP 8.3+ · Laravel 13</td></tr>
+          <tr><td>Frontend</td><td>Blade templates · custom CSS/JS (<code>public/assets</code>)</td></tr>
+          <tr><td>Database</td><td>MySQL / MariaDB (portable MariaDB in <code>tools/mariadb</code>)</td></tr>
+          <tr><td>Auth</td><td>Laravel sessions — Admin · User · Tax Expert</td></tr>
+          <tr><td>Payments</td><td>Demo checkout · optional Razorpay</td></tr>
+          <tr><td>Tooling</td><td>Composer · Artisan · PHPUnit · Laravel Pint</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section" id="requirements">
+    <div class="wrap">
+      <h2>Requirements</h2>
+      <p class="sub">Install these before you run the app.</p>
+      <table>
+        <thead><tr><th>Need</th><th>Details</th></tr></thead>
+        <tbody>
+          <tr><td>PHP</td><td>8.3+ with <code>pdo_mysql</code>, <code>mysqli</code>, <code>openssl</code>, <code>curl</code>, <code>zip</code>, <code>mbstring</code>, <code>fileinfo</code>, <code>intl</code></td></tr>
+          <tr><td>Composer</td><td>2.x</td></tr>
+          <tr><td>Database</td><td>MySQL 8+ or MariaDB 10.5+</td></tr>
+          <tr><td>Server</td><td><code>php artisan serve</code> locally, or Apache/Nginx → <code>public/</code></td></tr>
+          <tr><td>Optional</td><td>Node/npm only for Vite · Razorpay keys for live payments</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section" id="run">
+    <div class="wrap">
+      <h2>Run locally (Windows)</h2>
+      <p class="sub">From the project root folder (not a fixed drive path).</p>
+<pre>$env:PHPRC = (Get-Location).Path
+
+.\tools\start-mysql.bat
+php tools\setup-mysql.php
+php artisan migrate:fresh --seed
+
+php artisan serve --host=127.0.0.1 --port=8000
+php artisan serve --host=127.0.0.1 --port=8001</pre>
+      <div class="ports">
+        <div class="port">
+          <span>Main site</span>
+          <strong>http://127.0.0.1:8000</strong>
+        </div>
+        <div class="port">
+          <span>Admin (admin / admin@2026)</span>
+          <strong>http://127.0.0.1:8001/login</strong>
+        </div>
+      </div>
+      <p class="sub" style="margin-top:1rem;margin-bottom:0">
+        Full README: <a href="https://github.com/1mukeshr/itr-tax#readme" style="color:var(--purple);font-weight:650">github.com/1mukeshr/itr-tax</a>
+      </p>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="wrap">
+      Source: <a href="https://github.com/1mukeshr/itr-tax">github.com/1mukeshr/itr-tax</a>
+      · Updated landing (not the old README dump)
+    </div>
+  </footer>
 </body>
 </html>

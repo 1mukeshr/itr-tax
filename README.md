@@ -4,7 +4,10 @@ Income tax e-filing **workspace** built with Laravel. Guides Self or Expert-assi
 
 Official upload / e-verify / CPC refund remain on the Income Tax Department portal. This app does not replace ERI/ITD APIs without credentials.
 
-**Repository:** [github.com/1mukeshr/itr-tax](https://github.com/1mukeshr/itr-tax)
+**Repository:** [github.com/1mukeshr/itr-tax](https://github.com/1mukeshr/itr-tax)  
+**Project page:** [1mukeshr.github.io/itr-tax](https://1mukeshr.github.io/itr-tax/) (static landing only — not the live Laravel app)
+
+> GitHub Pages cannot run PHP/MySQL. Use the Quick start below to run the real portal locally on ports `8000` / `8001`.
 
 ---
 

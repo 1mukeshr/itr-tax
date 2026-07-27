@@ -56,7 +56,13 @@
 <tr class="{{ $o->status === 'paid' && empty($o->ca_id) ? 'itr-row-alert' : '' }}">
     <td><span class="itr-table-id">#{{ $o->id }}</span></td>
     <td>
-        <div class="itr-admin-cell-main">{{ $o->user->name ?? '-' }}</div>
+        <div class="itr-admin-cell-main">
+            @if(!empty($o->user_id))
+                <a href="{{ route('admin.users.show', $o->user_id) }}">{{ $o->user->name ?? '-' }}</a>
+            @else
+                {{ $o->user->name ?? '-' }}
+            @endif
+        </div>
         <div class="itr-admin-cell-sub">{{ $o->user->email ?? '' }}</div>
     </td>
     <td>{{ $o->itr_type }}</td>
@@ -64,7 +70,7 @@
     <td>{{ $o->ca->name ?? '—' }}</td>
     <td>{!! statusBadge($o->status) !!}</td>
     <td>
-        @if(in_array($o->status, ['paid', 'assigned', 'under_review', 'docs_requested', 'customer_summary', 'customer_approved'], true) || empty($o->ca_id))
+        @if(in_array($o->status, ['paid', 'assigned'], true))
         <form method="post" action="{{ route('admin.assign-ca', $o) }}" class="itr-inline-form">
             @csrf
             <select class="itr-form-control itr-select-sm" name="ca_id" required>
@@ -73,10 +79,10 @@
                 <option value="{{ $ca->id }}" {{ (int) $o->ca_id === (int) $ca->id ? 'selected' : '' }}>{{ $ca->name }}</option>
                 @endforeach
             </select>
-            <button class="itr-btn {{ $o->status === 'paid' ? 'itr-btn-orange' : 'itr-btn-outline' }} itr-btn-sm" type="submit">{{ $o->status === 'paid' ? 'Assign' : 'Save' }}</button>
+            <button class="itr-btn {{ $o->status === 'paid' ? 'itr-btn-orange' : 'itr-btn-outline' }} itr-btn-sm" type="submit">{{ $o->status === 'paid' ? 'Assign' : 'Reassign' }}</button>
         </form>
         @else
-            <span class="itr-table-muted">—</span>
+            <span class="itr-table-muted">{{ $o->ca->name ?? '—' }}</span>
         @endif
     </td>
 </tr>

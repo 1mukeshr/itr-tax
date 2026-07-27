@@ -13,7 +13,6 @@ use App\Support\ExpertAssigner;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
@@ -254,6 +253,39 @@ class AdminController extends Controller
         ]);
     }
 
+    public function showUser(User $user)
+    {
+        if ($user->role === 'ca') {
+            return redirect()->route('admin.cas.edit', $user->id);
+        }
+
+        $user->load(['profile', 'roleRelation']);
+
+        $filings = ItrFiling::with(['plan', 'ca'])
+            ->where('user_id', $user->id)
+            ->orderByDesc('updated_at')
+            ->paginate(10)
+            ->withQueryString();
+
+        $payments = Payment::where('user_id', $user->id)
+            ->orderByDesc('created_at')
+            ->limit(10)
+            ->get();
+
+        $completedStatuses = $this->completedStatuses();
+        $pendingStatuses = $this->pendingStatuses();
+
+        $stats = [
+            'orders' => ItrFiling::where('user_id', $user->id)->count(),
+            'completed' => ItrFiling::where('user_id', $user->id)->whereIn('status', $completedStatuses)->count(),
+            'pending' => ItrFiling::where('user_id', $user->id)->whereIn('status', $pendingStatuses)->count(),
+            'paid' => (float) Payment::where('user_id', $user->id)->where('status', 'success')->sum('amount'),
+            'payments' => Payment::where('user_id', $user->id)->where('status', 'success')->count(),
+        ];
+
+        return view('admin.user-show', compact('user', 'filings', 'payments', 'stats'));
+    }
+
     public function toggleUser(User $user)
     {
         if ($user->id === Auth::id()) {
@@ -425,7 +457,9 @@ class AdminController extends Controller
 
         $orders = $query->orderByDesc('created_at')->paginate(10)->withQueryString();
         $cas = User::withRole('ca')->where('status', 'active')->get(['id', 'name']);
-        $needsExpert = ItrFiling::where('status', 'paid')->whereNull('ca_id')->exists();
+        $needsExpert = ItrFiling::where('status', 'paid')->where(function ($q) {
+            $q->whereNull('ca_id')->orWhere('ca_id', 0);
+        })->exists();
 
         return view('admin.orders', [
             'orders' => $orders,

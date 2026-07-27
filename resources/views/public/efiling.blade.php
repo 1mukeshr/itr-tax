@@ -1,5 +1,7 @@
 @extends('layouts.main')
 
+@section('title', 'eFiling')
+
 @section('content')
 <div class="itr-page-banner"><div class="itr-container">
     <div class="itr-banner-inner">
@@ -26,12 +28,11 @@
 </div></section>
 
 <section class="itr-section itr-alt"><div class="itr-container">
-<div class="itr-section-title"><h2>File ITR in 3 simple steps</h2></div>
-<div class="itr-grid-3">
-    <div class="itr-box itr-process-card"><span class="itr-process-num">01</span><h3>Upload documents</h3><p>Form 16, AIS, 26AS, proofs.</p></div>
-    <div class="itr-box itr-process-card"><span class="itr-process-num">02</span><h3>Review tax summary</h3><p>Compare regimes &amp; deductions.</p></div>
-    <div class="itr-box itr-process-card"><span class="itr-process-num">03</span><h3>File or Hire Tax Expert</h3><p>Self-file or pay for tax expert filing.</p></div>
+<div class="itr-section-title">
+    <h2>Simple process — easy to follow</h2>
+    <p>Four clear steps from choosing a path to e-verify.</p>
 </div>
+@include('partials.process-steps', ['steps' => $processBoth ?? collect(), 'processMode' => 'both', 'class' => 'itr-process-grid itr-process-grid-4'])
 </div></section>
 
 <section class="itr-section"><div class="itr-container">

@@ -6,6 +6,7 @@ use App\Models\Blog;
 use App\Models\Coupon;
 use App\Models\Faq;
 use App\Models\Plan;
+use App\Models\ProcessStep;
 use App\Models\Role;
 use App\Models\Setting;
 use App\Models\User;
@@ -196,6 +197,28 @@ class DatabaseSeeder extends Seeder
             'company_address' => 'Bengaluru, India',
         ] as $k => $v) {
             Setting::updateOrCreate(['setting_key' => $k], ['setting_value' => $v]);
+        }
+
+        // Simple main-portal process steps (DB-driven, easy to edit).
+        ProcessStep::query()->delete();
+        $steps = [
+            ['mode' => 'both', 'title' => 'Pick Self or Tax Expert', 'description' => 'Choose free Self Filing for Form 16 cases, or hire an expert for complex income.', 'icon' => 'spark', 'sort_order' => 1],
+            ['mode' => 'both', 'title' => 'Answer a few questions', 'description' => 'Quick checks about salary, house, investments and deductions.', 'icon' => 'list', 'sort_order' => 2],
+            ['mode' => 'both', 'title' => 'Upload documents', 'description' => 'Form 16 is required. Add AIS / 26AS and proofs if you have them.', 'icon' => 'file', 'sort_order' => 3],
+            ['mode' => 'both', 'title' => 'Finish & e-verify', 'description' => 'Confirm figures (or pay for expert help), then e-verify on the Income Tax portal.', 'icon' => 'check', 'sort_order' => 4],
+
+            ['mode' => 'self', 'title' => 'Answer questions', 'description' => 'Tell us about your income in short answers.', 'icon' => 'list', 'sort_order' => 1],
+            ['mode' => 'self', 'title' => 'Upload Form 16', 'description' => 'Add Form 16 and any other proofs to your vault.', 'icon' => 'file', 'sort_order' => 2],
+            ['mode' => 'self', 'title' => 'Enter tax figures', 'description' => 'Fill income/TDS and compare old vs new regime.', 'icon' => 'chart', 'sort_order' => 3],
+            ['mode' => 'self', 'title' => 'Confirm & finish', 'description' => 'Generate your filing reference and e-verify tips.', 'icon' => 'check', 'sort_order' => 4],
+
+            ['mode' => 'assisted', 'title' => 'Answer questions', 'description' => 'Share a few details so we match the right plan path.', 'icon' => 'list', 'sort_order' => 1],
+            ['mode' => 'assisted', 'title' => 'Upload documents', 'description' => 'Form 16 plus AIS / proofs your expert will need.', 'icon' => 'file', 'sort_order' => 2],
+            ['mode' => 'assisted', 'title' => 'Pay for expert', 'description' => 'Confirm plan checkout after documents are ready.', 'icon' => 'wallet', 'sort_order' => 3],
+            ['mode' => 'assisted', 'title' => 'Approve & get ACK', 'description' => 'Review the expert summary, then download acknowledgement.', 'icon' => 'check', 'sort_order' => 4],
+        ];
+        foreach ($steps as $step) {
+            ProcessStep::create($step + ['is_active' => true]);
         }
     }
 }

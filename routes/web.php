@@ -118,6 +118,7 @@ Route::middleware(['auth', 'role:ca'])->prefix('ca')->name('ca.')->group(functio
 Route::middleware(['admin.host', 'auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/users', [AdminController::class, 'users'])->name('users');
+    Route::get('/users/{user}', [AdminController::class, 'showUser'])->name('users.show');
     Route::post('/users/{user}/toggle', [AdminController::class, 'toggleUser'])->name('toggle-user');
     Route::get('/cas', [AdminController::class, 'cas'])->name('cas');
     Route::get('/cas/create', [AdminController::class, 'createCa'])->name('cas.create');

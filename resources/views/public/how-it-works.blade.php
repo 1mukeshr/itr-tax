@@ -23,10 +23,13 @@
         <h3 class="itr-title-spaced">File yourself in minutes</h3>
         <p>Best for salaried taxpayers with Form 16 and straightforward deductions. You stay in control from upload to e-verify.</p>
         <ul class="itr-check-list">
-            <li>{!! icon('check') !!} Upload Form 16 / AIS / 26AS</li>
-            <li>{!! icon('check') !!} Enter figures &amp; review tax summary</li>
-            <li>{!! icon('check') !!} Compare old vs new regime</li>
-            <li>{!! icon('check') !!} Generate filing reference &amp; e-verify tips</li>
+            @forelse(($processSelf ?? collect())->take(4) as $step)
+                <li>{!! icon('check') !!} {{ $step->title }}</li>
+            @empty
+                <li>{!! icon('check') !!} Upload Form 16 / AIS / 26AS</li>
+                <li>{!! icon('check') !!} Enter figures &amp; review tax summary</li>
+                <li>{!! icon('check') !!} Generate filing reference &amp; e-verify tips</li>
+            @endforelse
         </ul>
         <a class="itr-btn itr-btn-primary" href="{{ filingStartUrl('self') }}">{!! icon('spark') !!} Start Self Filing</a>
     </div>
@@ -35,10 +38,13 @@
         <h3 class="itr-title-spaced">Expert-assisted filing</h3>
         <p>Ideal for investors, traders, freelancers, NRIs and anyone who wants a tax expert to review and file.</p>
         <ul class="itr-check-list">
-            <li>{!! icon('check') !!} Pick Basic / Standard / Premium</li>
-            <li>{!! icon('check') !!} Confirm plan checkout &amp; get tax expert match</li>
-            <li>{!! icon('check') !!} Respond to doc requests</li>
-            <li>{!! icon('check') !!} Track till ACK is ready</li>
+            @forelse(($processAssisted ?? collect())->take(4) as $step)
+                <li>{!! icon('check') !!} {{ $step->title }}</li>
+            @empty
+                <li>{!! icon('check') !!} Pick Basic / Standard / Premium</li>
+                <li>{!! icon('check') !!} Confirm plan checkout &amp; get tax expert match</li>
+                <li>{!! icon('check') !!} Track till ACK is ready</li>
+            @endforelse
         </ul>
         <a class="itr-btn itr-btn-orange" href="{{ filingStartUrl('assisted') }}">{!! icon('users') !!} Hire a Tax Expert</a>
     </div>
@@ -47,47 +53,21 @@
 
 <section class="itr-section itr-alt"><div class="itr-container">
 <div class="itr-section-title">
-    <h2>End-to-end journey</h2>
-    <p>Every filing follows the same clear stages — so you always know what’s next.</p>
+    <h2>Simple process for each path</h2>
+    <p>The same journey you follow after you start filing on {{ $app['name'] }}.</p>
 </div>
-<div class="itr-journey">
-    <div class="itr-journey-step">
-        <div class="itr-journey-num">{!! icon('user') !!}</div>
-        <div class="itr-journey-body">
-            <h3>Create account &amp; choose mode</h3>
-            <p>Sign up with email/PAN, select Self or Hire Tax Expert, and tell us your income profile (salaried, investor, NRI, etc.).</p>
-        </div>
+<div class="itr-grid-2">
+    <div class="itr-box">
+        <h3 class="itr-title-spaced">Self Filing</h3>
+        @include('partials.process-steps', ['steps' => $processSelf ?? collect(), 'processMode' => 'self', 'class' => 'itr-process-stack', 'numbered' => true])
+        <a class="itr-btn itr-btn-primary itr-mt-md" href="{{ filingStartUrl('self') }}">{!! icon('spark') !!} Start Self Filing</a>
     </div>
-    <div class="itr-journey-step">
-        <div class="itr-journey-num">{!! icon('upload') !!}</div>
-        <div class="itr-journey-body">
-            <h3>Upload Form 16 &amp; proofs</h3>
-            <p>Add Form 16, AIS/26AS, interest certificates and investment proofs to your secure document vault.</p>
-        </div>
-    </div>
-    <div class="itr-journey-step">
-        <div class="itr-journey-num">{!! icon('chart') !!}</div>
-        <div class="itr-journey-body">
-            <h3>Review tax summary</h3>
-            <p>See gross income, deductions and tax payable under old vs new regime. Pick the option with better savings.</p>
-        </div>
-    </div>
-    <div class="itr-journey-step">
-        <div class="itr-journey-num">{!! icon('wallet') !!}</div>
-        <div class="itr-journey-body">
-            <h3>Self-file or pay for expert</h3>
-            <p>Self: confirm preview and generate a filing reference. Expert: complete checkout, get tax expert assignment, and let them review.</p>
-        </div>
-    </div>
-    <div class="itr-journey-step">
-        <div class="itr-journey-num">{!! icon('download') !!}</div>
-        <div class="itr-journey-body">
-            <h3>Track, download ACK &amp; e-verify</h3>
-            <p>Follow status updates, download acknowledgement/reference, and e-verify within 30 days on the Income Tax portal.</p>
-        </div>
+    <div class="itr-box">
+        <h3 class="itr-title-spaced">Hire a Tax Expert</h3>
+        @include('partials.process-steps', ['steps' => $processAssisted ?? collect(), 'processMode' => 'assisted', 'class' => 'itr-process-stack', 'numbered' => true])
+        <a class="itr-btn itr-btn-orange itr-mt-md" href="{{ filingStartUrl('assisted') }}">{!! icon('users') !!} Hire a Tax Expert</a>
     </div>
 </div>
-<p class="itr-text-center itr-mt-lg"><a class="itr-btn itr-btn-orange" href="{{ filingStartUrl('self') }}">{!! icon('spark') !!} Start Filing Now</a></p>
 </div></section>
 
 <section class="itr-section"><div class="itr-container">

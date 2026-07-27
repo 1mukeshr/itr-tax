@@ -1,5 +1,7 @@
 @extends('layouts.main')
 
+@section('title', 'Pricing')
+
 @section('content')
 <div class="itr-page-banner"><div class="itr-container">
     <div class="itr-banner-inner">

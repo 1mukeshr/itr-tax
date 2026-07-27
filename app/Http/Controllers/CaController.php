@@ -107,6 +107,7 @@ class CaController extends Controller
         $filing->update(['status' => 'docs_requested']);
 
         logFilingStatus($filing->id, $oldStatus, 'docs_requested', Auth::id(), $request->message);
+
         return back()->with('success', 'Document request sent to client.');
     }
 
@@ -122,6 +123,7 @@ class CaController extends Controller
         $filing->update(['status' => 'under_review']);
 
         logFilingStatus($filing->id, $oldStatus, 'under_review', Auth::id(), 'Tax expert started review');
+
         return back()->with('success', 'Marked as under review.');
     }
 
@@ -147,6 +149,7 @@ class CaController extends Controller
         ]);
 
         logFilingStatus($filing->id, $oldStatus, 'filed', Auth::id(), 'ITR filed. ACK: '.$request->acknowledgement_no);
+
         return back()->with('success', 'Filing marked as filed.');
     }
 
@@ -200,6 +203,7 @@ class CaController extends Controller
         ]);
 
         logFilingStatus($filing->id, $oldStatus, 'customer_summary', Auth::id(), 'Tax summary sent to customer for approval');
+
         return back()->with('success', 'Tax summary sent to customer for approval.');
     }
 
@@ -236,6 +240,7 @@ class CaController extends Controller
         ]);
 
         logFilingStatus($filing->id, $oldStatus, 'completed', Auth::id(), 'ITR receipt uploaded');
+
         return back()->with('success', 'Receipt uploaded. Filing completed.');
     }
 

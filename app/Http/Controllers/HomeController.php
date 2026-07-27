@@ -25,16 +25,20 @@ class HomeController extends Controller
             'experts' => User::withRole('ca')->where('status', 'active')->count(),
             'users' => User::withRole('user')->where('status', 'active')->count(),
         ];
+        $processBoth = processSteps('both');
+        $processSelf = processSteps('self');
+        $processAssisted = processSteps('assisted');
 
-        return view('public.home', compact('plans', 'faqs', 'blogs', 'stats'));
+        return view('public.home', compact('plans', 'faqs', 'blogs', 'stats', 'processBoth', 'processSelf', 'processAssisted'));
     }
 
     public function efiling()
     {
         $plans = Plan::where('is_active', true)->where('slug', '!=', 'self-free')->orderBy('sort_order')->limit(3)->get();
         $faqs = Faq::where('is_active', true)->orderBy('sort_order')->limit(6)->get();
+        $processBoth = processSteps('both');
 
-        return view('public.efiling', compact('plans', 'faqs'));
+        return view('public.efiling', compact('plans', 'faqs', 'processBoth'));
     }
 
     public function pricing()
@@ -46,7 +50,10 @@ class HomeController extends Controller
 
     public function howItWorks()
     {
-        return view('public.how-it-works');
+        $processSelf = processSteps('self');
+        $processAssisted = processSteps('assisted');
+
+        return view('public.how-it-works', compact('processSelf', 'processAssisted'));
     }
 
     public function taxCalculator()
@@ -217,6 +224,7 @@ class HomeController extends Controller
         } catch (\Throwable) {
             // Older DB without nullable user_id / contact columns: notify admins only.
             $ticket = null;
+
             return redirect()->route('contact')->with('success', 'Thanks! Your message was submitted. We will get back to you shortly.');
         }
 

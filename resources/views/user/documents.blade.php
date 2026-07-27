@@ -9,7 +9,7 @@
     $isAssisted = $filing->filing_mode === 'assisted';
     $continueOk = $isAssisted
         ? in_array($filing->status, ['documents_pending', 'draft', 'details_review'], true)
-        : in_array($filing->status, ['documents_pending', 'docs_requested'], true);
+        : in_array($filing->status, ['documents_pending', 'docs_requested', 'draft'], true);
     $nextLabel = $isAssisted
         ? ($filing->status === 'details_review' ? 'Back to confirm & pay' : 'Continue to review')
         : 'Continue to tax summary';

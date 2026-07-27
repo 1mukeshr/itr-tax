@@ -28,7 +28,9 @@
 <tbody>
 @forelse($users as $u)
 <tr>
-    <td><span class="itr-admin-cell-main">{{ $u->name }}</span></td>
+    <td>
+        <a class="itr-admin-cell-main" href="{{ route('admin.users.show', $u) }}">{{ $u->name }}</a>
+    </td>
     <td>{{ $u->email }}</td>
     <td><span class="itr-badge {{ $u->role === 'admin' ? 'itr-badge-info' : ($u->role === 'ca' ? 'itr-badge-warn' : 'itr-badge-muted') }}">{{ roleLabel($u->role) }}</span></td>
     <td>{{ $u->phone ?: '—' }}</td>
@@ -40,6 +42,7 @@
         @endif
     </td>
     <td>
+        <a class="itr-btn itr-btn-outline itr-btn-sm" href="{{ route('admin.users.show', $u) }}">View</a>
         @if($u->role === 'ca')
             <a class="itr-btn itr-btn-outline itr-btn-sm" href="{{ route('admin.cas.edit', $u->id) }}">Edit tax expert</a>
         @endif

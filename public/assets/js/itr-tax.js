@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Suggest ITR from income profile
   const profileSel = document.querySelector('[data-itr-suggest]');
-  const itrType = document.getElementById('itrType');
+  const itrType = document.getElementById('itrTypeSelect') || document.getElementById('itrType');
   const itrHint = document.getElementById('itrHint');
   const mapItr = {
     salaried: ['ITR-1', 'ITR-1 suits most salaried Form 16 cases.'],
@@ -291,15 +291,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const row = mapItr[profileSel.value] || mapItr.salaried;
     itrType.value = row[0];
     if (itrHint) itrHint.textContent = row[1];
-    const complex = ['investor', 'advanced_trader', 'nri', 'affluent'].includes(profileSel.value);
-    const assisted = document.querySelector('input[name="filing_mode"][value="assisted"]');
-    if (complex && assisted) {
-      assisted.checked = true;
-      assisted.dispatchEvent(new Event('change'));
-      document.querySelectorAll('input[name="filing_mode"]').forEach((radio) => {
-        radio.closest('.itr-plan')?.classList.toggle('itr-hot', radio.checked);
-      });
-    }
   };
   if (profileSel) {
     profileSel.addEventListener('change', syncItr);
@@ -330,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const better = newTax <= oldTax ? 'NEW' : 'OLD';
       const saving = Math.abs(oldTax - newTax);
       const rec = document.getElementById('sumRec');
-      if (rec) rec.innerHTML = `Lower estimated tax: <strong>${better} regime</strong> (difference about ${money(saving)}). Simplified estimate including §87A where applicable.`;
+      if (rec) rec.innerHTML = `Lower estimated tax: <strong>${better} regime</strong> (difference about ${money(saving)}). Simplified estimate including ï¿½87A where applicable.`;
     };
     ['sumGross', 'sumDeduct', 'sumTds'].forEach((id) => {
       document.getElementById(id)?.addEventListener('input', runSummary);

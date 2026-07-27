@@ -7,15 +7,16 @@
     $mode = in_array($mode ?? null, ['self', 'assisted'], true) ? $mode : null;
     $planId = $planId ?? 0;
     $profile = $profile ?? 'salaried';
+    $selfSteps = $processSelf ?? collect();
+    $assistedSteps = $processAssisted ?? collect();
 @endphp
 
 <div class="itr-order">
     <div class="itr-page-title">
         <h1>Start your ITR</h1>
-        <p>Simple steps — pick a path, confirm a few details, then continue.</p>
+        <p>Pick a mode, enter quick details, then continue. The list under each card is the full journey after you start.</p>
     </div>
 
-    {{-- Step A: Mode --}}
     <div class="itr-card itr-order-card">
         <div class="itr-card-h">
             <span class="itr-order-stepnum">1</span>
@@ -27,29 +28,37 @@
                     {!! iconBox('spark') !!}
                     <h3>Self Filing — Free</h3>
                     <p>Form 16 salary cases. You enter figures and confirm.</p>
-                    <ul class="itr-order-mini">
-                        <li>Questions</li>
-                        <li>Documents</li>
-                        <li>Tax summary</li>
-                        <li>Confirm</li>
-                    </ul>
+                    <ol class="itr-order-mini">
+                        @forelse($selfSteps as $step)
+                            <li>{{ $step->title }}</li>
+                        @empty
+                            <li>Questions</li>
+                            <li>Documents</li>
+                            <li>Tax summary</li>
+                            <li>Confirm</li>
+                        @endforelse
+                    </ol>
                     <span class="itr-link-more">{{ $mode === 'self' ? 'Selected' : 'Choose Self Filing' }} {!! icon('arrow-right') !!}</span>
                 </a>
                 <a class="itr-easy-card {{ $mode === 'assisted' ? 'itr-easy-active' : '' }}" href="{{ route('user.choose-service', ['mode' => 'assisted', 'plan_id' => $planId ?: null, 'profile' => $profile]) }}">
                     {!! iconBox('users') !!}
                     <h3>Hire a Tax Expert</h3>
                     <p>Pay after documents. Expert reviews, you approve, get ACK.</p>
-                    <ul class="itr-order-mini">
-                        <li>Questions</li>
-                        <li>Documents</li>
-                        <li>Pay</li>
-                        <li>Expert → Approve → ACK</li>
-                    </ul>
+                    <ol class="itr-order-mini">
+                        @forelse($assistedSteps as $step)
+                            <li>{{ $step->title }}</li>
+                        @empty
+                            <li>Questions</li>
+                            <li>Documents</li>
+                            <li>Pay</li>
+                            <li>Approve → ACK</li>
+                        @endforelse
+                    </ol>
                     <span class="itr-link-more">{{ $mode === 'assisted' ? 'Selected' : 'Choose Tax Expert' }} {!! icon('arrow-right') !!}</span>
                 </a>
             </div>
             @if(! $mode)
-                <div class="itr-soft-note itr-mt-md">Select <strong>Self Filing</strong> or <strong>Hire a Tax Expert</strong> to unlock the next step.</div>
+                <div class="itr-soft-note itr-mt-md">Select <strong>Self Filing</strong> or <strong>Hire a Tax Expert</strong> to continue.</div>
             @endif
         </div>
     </div>
@@ -59,11 +68,10 @@
         @csrf
         <input type="hidden" name="filing_mode" value="{{ $mode }}">
 
-        {{-- Step B: Details --}}
         <div class="itr-card itr-order-card">
             <div class="itr-card-h">
                 <span class="itr-order-stepnum">2</span>
-                Your filing details
+                Quick details
             </div>
             <div class="itr-card-b">
                 <div class="itr-form-row">
@@ -83,21 +91,18 @@
                         <input class="itr-form-control itr-pan-input" name="pan" maxlength="10" placeholder="ABCDE1234F" value="{{ old('pan', auth()->user()->pan) }}" required>
                     </div>
                 </div>
-
-                <p class="itr-help itr-mb-sm">ITR form <span class="itr-help">(suggested from profile — change if needed)</span></p>
-                <div class="itr-itr-grid">
-                    @foreach([
-                        'ITR-1' => 'Salary / pension — one house, no capital gains',
-                        'ITR-2' => 'Capital gains, multiple property, NRI / foreign',
-                        'ITR-3' => 'Business / profession / F&amp;O / trading',
-                        'ITR-4' => 'Presumptive business (44AD / 44ADA)',
-                    ] as $type => $desc)
-                    <label class="itr-plan itr-is-clickable {{ $type === suggestItrType($profile) ? 'itr-hot' : '' }}">
-                        <input type="radio" name="itr_type" value="{{ $type }}" {{ $type === suggestItrType($profile) ? 'checked' : '' }} required>
-                        <h3 class="itr-plan-name">{{ $type }}</h3>
-                        <p>{{ $desc }}</p>
-                    </label>
-                    @endforeach
+                <div class="itr-form-group">
+                    <label>ITR form <span class="itr-help">(suggested from profile)</span></label>
+                    <select class="itr-form-control" name="itr_type" id="itrTypeSelect" required>
+                        @foreach([
+                            'ITR-1' => 'ITR-1 — Salary / pension',
+                            'ITR-2' => 'ITR-2 — Capital gains / NRI',
+                            'ITR-3' => 'ITR-3 — Business / F&O',
+                            'ITR-4' => 'ITR-4 — Presumptive business',
+                        ] as $type => $label)
+                            <option value="{{ $type }}" {{ $type === suggestItrType($profile) ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
         </div>
@@ -127,7 +132,7 @@
         <div class="itr-order-bar">
             <div class="itr-order-bar-copy">
                 <strong>{{ $mode === 'self' ? 'Self Filing' : 'Hire a Tax Expert' }}</strong>
-                <span>Next: answer 10 short questions</span>
+                <span>Next: short questions</span>
             </div>
             <button class="itr-btn itr-btn-orange itr-btn-lg" type="submit">
                 {!! icon('arrow-right') !!} Continue

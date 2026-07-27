@@ -114,14 +114,10 @@ class UserController extends Controller
         };
         $planId = (int) $request->query('plan_id');
         $profile = $request->query('profile', 'salaried');
+        $processSelf = processSteps('self');
+        $processAssisted = processSteps('assisted');
 
-        return view('user.choose-service', compact('plans', 'mode', 'planId', 'profile'));
-    }
-
-    /** @deprecated alias */
-    public function startFiling(Request $request)
-    {
-        return $this->chooseService($request);
+        return view('user.choose-service', compact('plans', 'mode', 'planId', 'profile', 'processSelf', 'processAssisted'));
     }
 
     public function createFiling(Request $request)
@@ -144,6 +140,10 @@ class UserController extends Controller
 
         if ($mode === 'self') {
             $plan = Plan::where('slug', 'self-free')->where('is_active', true)->first();
+            if (! $plan) {
+                return redirect()->route('user.choose-service', ['mode' => 'self'])
+                    ->with('error', 'Self Filing is temporarily unavailable. Please try again later or contact support.');
+            }
         } else {
             $plan = Plan::where('id', $request->input('plan_id'))->where('is_active', true)->first();
             if (! $plan) {
@@ -165,7 +165,7 @@ class UserController extends Controller
 
         logFilingStatus($filing->id, null, 'questionnaire_pending', Auth::id(), 'Service chosen — answer a few questions next');
 
-        return redirect()->route('user.questions', $filing)->with('success', 'Service selected. Answer 10 quick questions.');
+        return redirect()->route('user.questions', $filing)->with('success', 'Service selected. Answer a few short questions next.');
     }
 
     public function questions(ItrFiling $filing)
@@ -817,7 +817,6 @@ class UserController extends Controller
 
             return redirect()->route('user.track', $filing)->with('success', 'Payment successful. Tax expert '.$expert->name.' has been assigned.');
         }
-
 
         return redirect()->route('user.track', $filing)->with('success', 'Payment successful. Waiting for admin to assign your tax expert.');
     }

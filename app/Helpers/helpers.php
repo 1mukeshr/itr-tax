@@ -1,10 +1,12 @@
 <?php
 
+use App\Models\ProcessStep;
 use App\Models\StatusLog;
 use App\Support\Icon;
 use App\Support\Portal;
 use App\Support\TaxCalculator;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 if (! function_exists('icon')) {
@@ -18,6 +20,75 @@ if (! function_exists('iconBox')) {
     function iconBox(string $name, string $boxClass = 'itr-ico'): string
     {
         return '<div class="'.e($boxClass).'">'.icon($name).'</div>';
+    }
+}
+
+if (! function_exists('defaultProcessSteps')) {
+    /**
+     * Hardcoded fallbacks when process_steps is empty or unavailable.
+     *
+     * @return Collection<int, ProcessStep>
+     */
+    function defaultProcessSteps(?string $mode = null)
+    {
+        $mode = in_array($mode, ['self', 'assisted', 'both'], true) ? $mode : 'both';
+        $catalog = [
+            'both' => [
+                ['title' => 'Pick Self or Tax Expert', 'description' => 'Choose free Self Filing for Form 16 cases, or hire an expert for complex income.', 'icon' => 'spark'],
+                ['title' => 'Answer a few questions', 'description' => 'Quick checks about salary, house, investments and deductions.', 'icon' => 'list'],
+                ['title' => 'Upload documents', 'description' => 'Form 16 is required. Add AIS / 26AS and proofs if you have them.', 'icon' => 'file'],
+                ['title' => 'Finish & e-verify', 'description' => 'Confirm figures (or pay for expert help), then e-verify on the Income Tax portal.', 'icon' => 'check'],
+            ],
+            'self' => [
+                ['title' => 'Answer questions', 'description' => 'Tell us about your income in short answers.', 'icon' => 'list'],
+                ['title' => 'Upload Form 16', 'description' => 'Add Form 16 and any other proofs to your vault.', 'icon' => 'file'],
+                ['title' => 'Enter tax figures', 'description' => 'Fill income/TDS and compare old vs new regime.', 'icon' => 'chart'],
+                ['title' => 'Confirm & finish', 'description' => 'Generate your filing reference and e-verify tips.', 'icon' => 'check'],
+            ],
+            'assisted' => [
+                ['title' => 'Answer questions', 'description' => 'Share a few details so we match the right plan path.', 'icon' => 'list'],
+                ['title' => 'Upload documents', 'description' => 'Form 16 plus AIS / proofs your expert will need.', 'icon' => 'file'],
+                ['title' => 'Pay for expert', 'description' => 'Confirm plan checkout after documents are ready.', 'icon' => 'wallet'],
+                ['title' => 'Approve & get ACK', 'description' => 'Review the expert summary, then download acknowledgement.', 'icon' => 'check'],
+            ],
+        ];
+
+        return collect($catalog[$mode])->values()->map(function (array $row, int $i) use ($mode) {
+            return new ProcessStep([
+                'mode' => $mode,
+                'title' => $row['title'],
+                'description' => $row['description'],
+                'icon' => $row['icon'],
+                'sort_order' => $i + 1,
+                'is_active' => true,
+            ]);
+        });
+    }
+}
+
+if (! function_exists('processSteps')) {
+    /**
+     * Active filing process steps from DB (mode: self|assisted|both).
+     *
+     * @return Collection<int, ProcessStep>
+     */
+    function processSteps(?string $mode = null)
+    {
+        try {
+            $query = ProcessStep::query()->active()->orderBy('sort_order')->orderBy('id');
+            if ($mode === 'self' || $mode === 'assisted' || $mode === 'both') {
+                $query->forMode($mode);
+            }
+
+            $steps = $query->get();
+            if ($steps->isNotEmpty()) {
+                return $steps;
+            }
+        } catch (Throwable) {
+            // Table missing or DB unavailable — use fallbacks below.
+        }
+
+        return defaultProcessSteps($mode);
     }
 }
 

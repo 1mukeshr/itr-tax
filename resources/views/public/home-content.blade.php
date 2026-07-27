@@ -18,30 +18,6 @@
                 <span>{!! icon('shield') !!} E-verify in 30 days</span>
             </div>
         </div>
-
-        <aside class="itr-hero-stage" aria-label="Filing highlights">
-            <div class="itr-hero-orbit" aria-hidden="true"></div>
-            <div class="itr-hero-circle itr-hero-circle-a">
-                <span class="itr-hero-circle-ico itr-hero-circle-ico-orange">{!! icon('spark') !!}</span>
-                <strong>Self Filing</strong>
-                <span>Form 16 path</span>
-            </div>
-            <div class="itr-hero-circle itr-hero-circle-b">
-                <span class="itr-hero-circle-ico">{!! icon('users') !!}</span>
-                <strong>Expert Assist</strong>
-                <span>ACK tracking</span>
-            </div>
-            <div class="itr-hero-circle itr-hero-circle-c">
-                <em>{{ number_format($stats['completed'] ?? 0) }}+</em>
-                <strong>Completed</strong>
-                <span>Returns filed</span>
-            </div>
-            <div class="itr-hero-circle itr-hero-circle-d">
-                <span class="itr-hero-circle-ico itr-hero-circle-ico-ok">{!! icon('shield') !!}</span>
-                <strong>Secure vault</strong>
-                <span>Role access</span>
-            </div>
-        </aside>
     </div>
 </section>
 
@@ -57,13 +33,17 @@
                     {!! iconBox('spark') !!}
                     <div>
                         <span class="itr-tag itr-tag-orange">Self Filing</span>
-                        <h3>Prepare your return in 3 steps</h3>
+                        <h3>Prepare your return simply</h3>
                     </div>
                 </div>
                 <ul class="itr-check-list">
-                    <li>{!! icon('check') !!} Upload Form 16 / AIS / 26AS</li>
-                    <li>{!! icon('check') !!} Enter figures &amp; compare regimes</li>
-                    <li>{!! icon('check') !!} Generate filing reference &amp; e-verify tips</li>
+                    @forelse(($processSelf ?? collect())->take(4) as $step)
+                        <li>{!! icon('check') !!} {{ $step->title }}</li>
+                    @empty
+                        <li>{!! icon('check') !!} Upload Form 16 / AIS / 26AS</li>
+                        <li>{!! icon('check') !!} Enter figures &amp; compare regimes</li>
+                        <li>{!! icon('check') !!} Generate filing reference &amp; e-verify tips</li>
+                    @endforelse
                 </ul>
                 <a class="itr-btn itr-btn-primary itr-btn-block" href="{{ filingStartUrl('self') }}">{!! icon('spark') !!} Start Self Filing</a>
             </div>
@@ -76,9 +56,13 @@
                     </div>
                 </div>
                 <ul class="itr-check-list">
-                    <li>{!! icon('check') !!} Expert assigned after payment</li>
-                    <li>{!! icon('check') !!} Capital gains / F&amp;O / NRI support</li>
-                    <li>{!! icon('check') !!} Tracking till expert uploads ACK</li>
+                    @forelse(($processAssisted ?? collect())->take(4) as $step)
+                        <li>{!! icon('check') !!} {{ $step->title }}</li>
+                    @empty
+                        <li>{!! icon('check') !!} Expert assigned after payment</li>
+                        <li>{!! icon('check') !!} Capital gains / F&amp;O / NRI support</li>
+                        <li>{!! icon('check') !!} Tracking till expert uploads ACK</li>
+                    @endforelse
                 </ul>
                 <a class="itr-btn itr-btn-orange itr-btn-block" href="{{ filingStartUrl('assisted') }}">{!! icon('users') !!} Hire a Tax Expert</a>
             </div>
@@ -171,14 +155,53 @@
 
 <section class="itr-section">
     <div class="itr-container">
-        <div class="itr-section-title"><h2>File ITR in 3 simple steps</h2></div>
-        <div class="itr-grid-3">
-            <div class="itr-box itr-process-card"><span class="itr-process-num">01</span><h3>Upload documents</h3><p>Form 16, AIS, 26AS and investment proofs — stored in your filing vault.</p></div>
-            <div class="itr-box itr-process-card"><span class="itr-process-num">02</span><h3>Review &amp; confirm</h3><p>Enter income/TDS, compare regimes, then self-prepare or pay for expert review.</p></div>
-            <div class="itr-box itr-process-card"><span class="itr-process-num">03</span><h3>Track &amp; e-verify</h3><p>Download your reference/ACK and e-verify on the Income Tax portal within 30 days.</p></div>
+        <div class="itr-section-title">
+            <h2>Simple process — easy to follow</h2>
+            <p>Overview of the full journey, or switch to Self Filing / Tax Expert steps.</p>
+        </div>
+        <div class="itr-process-tabs" role="tablist" aria-label="Filing process">
+            <button type="button" class="is-active" data-process-tab="both" role="tab" aria-selected="true">Overview</button>
+            <button type="button" data-process-tab="self" role="tab" aria-selected="false">Self Filing</button>
+            <button type="button" data-process-tab="assisted" role="tab" aria-selected="false">Tax Expert</button>
+        </div>
+        <div class="itr-process-panels">
+            <div class="itr-process-panel is-active" data-process-panel="both">
+                @include('partials.process-steps', ['steps' => $processBoth ?? collect(), 'processMode' => 'both', 'class' => 'itr-process-grid itr-process-grid-4'])
+            </div>
+            <div class="itr-process-panel" data-process-panel="self" hidden>
+                @include('partials.process-steps', ['steps' => $processSelf ?? collect(), 'processMode' => 'self', 'class' => 'itr-process-grid itr-process-grid-4'])
+                <p class="itr-text-center itr-mt-md"><a class="itr-btn itr-btn-primary" href="{{ filingStartUrl('self') }}">{!! icon('spark') !!} Start Self Filing</a></p>
+            </div>
+            <div class="itr-process-panel" data-process-panel="assisted" hidden>
+                @include('partials.process-steps', ['steps' => $processAssisted ?? collect(), 'processMode' => 'assisted', 'class' => 'itr-process-grid itr-process-grid-4'])
+                <p class="itr-text-center itr-mt-md"><a class="itr-btn itr-btn-orange" href="{{ filingStartUrl('assisted') }}">{!! icon('users') !!} Hire a Tax Expert</a></p>
+            </div>
         </div>
     </div>
 </section>
+
+<script>
+(function () {
+    var tabs = document.querySelectorAll('[data-process-tab]');
+    var panels = document.querySelectorAll('[data-process-panel]');
+    if (!tabs.length) return;
+    tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            var key = tab.getAttribute('data-process-tab');
+            tabs.forEach(function (t) {
+                var on = t === tab;
+                t.classList.toggle('is-active', on);
+                t.setAttribute('aria-selected', on ? 'true' : 'false');
+            });
+            panels.forEach(function (p) {
+                var on = p.getAttribute('data-process-panel') === key;
+                p.classList.toggle('is-active', on);
+                p.hidden = !on;
+            });
+        });
+    });
+})();
+</script>
 
 <section class="itr-guarantee-band" aria-labelledby="itr-guarantee-title">
     <div class="itr-container">

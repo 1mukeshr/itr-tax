@@ -181,7 +181,13 @@
                         <tr>
                             <td class="itr-row-strong">#{{ $o->id }}</td>
                             <td>
-                                <div class="itr-admin-cell-main">{{ $o->user->name ?? '-' }}</div>
+                                <div class="itr-admin-cell-main">
+                                    @if(!empty($o->user_id))
+                                        <a href="{{ route('admin.users.show', $o->user_id) }}">{{ $o->user->name ?? '-' }}</a>
+                                    @else
+                                        {{ $o->user->name ?? '-' }}
+                                    @endif
+                                </div>
                                 <div class="itr-admin-cell-sub">{{ $o->user->email ?? '' }}</div>
                             </td>
                             <td>{{ $o->plan->name ?? '-' }}</td>
@@ -191,7 +197,7 @@
                             <td>{!! statusBadge($o->status) !!}</td>
                             <td>{{ optional($o->updated_at)->format('d M, h:i A') ?? '-' }}</td>
                             <td>
-                                <a class="itr-btn itr-btn-outline itr-btn-sm" href="{{ route('admin.orders', ['status' => $o->status]) }}">Open</a>
+                                <a class="itr-btn itr-btn-outline itr-btn-sm" href="{{ route('admin.orders', ['status' => in_array($o->status, ['filed', 'completed'], true) ? 'complete' : $o->status, 'q' => $o->id]) }}">Open</a>
                             </td>
                         </tr>
                     @empty
